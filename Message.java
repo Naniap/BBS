@@ -7,6 +7,13 @@ public class Message {
 	private String topic;
 	private Timestamp postedTime;
 	private Timestamp lastEdit;
+	public Message(String author, String message, String topic, Timestamp postedTime, Timestamp lastEdit) {
+		this.author = author;
+		this.message = message;
+		this.topic = topic;
+		this.postedTime = postedTime;
+		this.lastEdit = lastEdit;
+	}
 	public int getId() {
 		return id;
 	}

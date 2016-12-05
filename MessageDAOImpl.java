@@ -59,6 +59,7 @@ public class MessageDAOImpl implements MessageDAO {
 			ResultSet rs = pstmt.executeQuery();
 			while (rs.next()) {
 				System.out.println("ID: " + rs.getInt(1) + " message: " + rs.getString(2) + " topic: " + rs.getString(3) + " author: " + rs.getString(4));
+				//Message msg = new Message();
 				return null;
 			}
 		}
