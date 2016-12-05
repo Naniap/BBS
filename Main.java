@@ -1,4 +1,5 @@
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
@@ -7,7 +8,7 @@ public class Main {
 		createUser();
 	}
 	public static void createUser() {
-		Scanner sc = new Scanner(System.in);
+		/*Scanner sc = new Scanner(System.in);
 		User user = new User();
 		System.out.print("Enter a new username: ");
 		user.setUserName(sc.nextLine());
@@ -20,6 +21,12 @@ public class Main {
 		userDAO.getConnection();
 		
 		userDAO.insert(user);
-		userDAO.closeConnection();
+		userDAO.closeConnection();*/
+		
+		MessageDAOImpl msgDAO = new MessageDAOImpl();
+		msgDAO.getConnection();
+		ArrayList<Message> msg = msgDAO.selectAll();
+		msgDAO.closeConnection();
+		
 	}
 }
