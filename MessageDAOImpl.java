@@ -54,14 +54,22 @@ public class MessageDAOImpl implements MessageDAO {
 
 	@Override
 	public ArrayList<Message> selectAll() {
+		connection = getConnection();
 		try {
-			PreparedStatement pstmt = connection.prepareStatement("SELECT id, message, topic, author FROM message");
+			ArrayList<Message> msgArr = new ArrayList<>();
+			PreparedStatement pstmt = connection.prepareStatement("SELECT id, message, topic, create_date, last_edit, author FROM message");
 			ResultSet rs = pstmt.executeQuery();
 			while (rs.next()) {
-				System.out.println("ID: " + rs.getInt(1) + " message: " + rs.getString(2) + " topic: " + rs.getString(3) + " author: " + rs.getString(4));
-				//Message msg = new Message();
-				return null;
+				int id = rs.getInt(1);
+				String message = rs.getString(2);
+				String topic = rs.getString(3);
+				Timestamp create_date = rs.getTimestamp(4);
+				Timestamp last_edit = rs.getTimestamp(5);
+				String author = rs.getString(6);
+				Message msg = new Message(id, message, topic, create_date, last_edit, author);
+				msgArr.add(msg);
 			}
+			return msgArr;
 		}
 		catch (SQLException e) {}
 		return null;
@@ -74,4 +82,17 @@ public class MessageDAOImpl implements MessageDAO {
             } catch (Exception e) { 
             }
     }
+	@Override
+	public void update(Message msg, Timestamp time) {
+		connection = getConnection();
+		try {
+			PreparedStatement pstmt = connection.prepareStatement("UPDATE message SET message = ?, author = ?, topic = ?, last_edit = ? WHERE id = ?");
+			pstmt.setString(1, msg.getMessage());
+			pstmt.setString(2, msg.getAuthor());
+			pstmt.setString(3, msg.getTopic());
+			pstmt.setTimestamp(4, time);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 }
