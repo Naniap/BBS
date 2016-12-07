@@ -34,9 +34,9 @@ public class Main {
 		}
 		else {
 			for (Message m : msg) {
-				m.setAuthor("Mike");
+				/*m.setAuthor("Mike");
 				m.setMessage("Hi this is a test message!");
-				m.setTopic("Hi this is a test topic!");
+				m.setTopic("Hi this is a test topic!");*/
 				m.setLastEdit();
 				System.out.println("ID: " + m.getId() + " Message: " + m.getMessage() + " Author: " + m.getAuthor() + " Topic: " + m.getTopic() + " Creation Date: " + m.getPostedTime() + " Last Edited: " + m.getLastEdit());
 			}

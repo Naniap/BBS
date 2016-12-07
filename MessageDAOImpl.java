@@ -91,6 +91,8 @@ public class MessageDAOImpl implements MessageDAO {
 			pstmt.setString(2, msg.getAuthor());
 			pstmt.setString(3, msg.getTopic());
 			pstmt.setTimestamp(4, time);
+			pstmt.setInt(5, msg.getId());
+			pstmt.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
