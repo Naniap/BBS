@@ -1,3 +1,4 @@
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -40,6 +41,7 @@ public class BBServer
     public void acceptConnection() throws IOException
     {
         clientConnection = server.accept();
+
         ClientConnectionHandler cch = new ClientConnectionHandler(clientConnection, this.users, this.messages, this.loggedInUsers);
         
         if (checkActiveConnections() < maxClients)
@@ -136,6 +138,7 @@ public class BBServer
     {
     	//TODO this loads the users and messages from database.
     	// for now, it will create empty lists.
+    	
     	users = new ArrayList<User>();
         messages = new ArrayList<Message>();
     }

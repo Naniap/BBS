@@ -4,17 +4,34 @@ public class Message {
 	MessageDAOImpl mDAO = new MessageDAOImpl();
 	private int id;
 	private String author;
+	public String title;
 	private String message;
-	private String topic;
+	public String topic;
 	private Timestamp postedTime;
 	private Timestamp lastEdit;
-	public Message(int id, String message, String topic, Timestamp postedTime, Timestamp lastEdit, String author) {
+	public Message(int id, String message, String topic, Timestamp postedTime, Timestamp lastEdit, String author, String title) {
 		this.id = id;
 		this.author = author;
 		this.message = message;
+		this.title = title;
 		this.topic = topic;
 		this.postedTime = postedTime;
 		this.lastEdit = lastEdit;
+	}
+	public Message(String message, String topic, String title, User author) {
+		this.message = message;
+		this.topic = topic;
+		this.title = title;
+		this.author = author.getUserName();
+	}
+	public String getTitle() {
+		return title;
+	}
+	public void setTitle(String title) {
+		Timestamp time = new Timestamp(System.currentTimeMillis());
+		this.title = title;
+		lastEdit = time;
+		mDAO.update(this, time);
 	}
 	public int getId() {
 		return id;
@@ -57,7 +74,16 @@ public class Message {
 		this.author = author;
 		mDAO.update(this, time);
 	}
-	
+	public boolean titleMatches(String t)
+	{
+		return this.title.equals(t);
+	}
+	public String displayString()
+	{
+		String s = "Title: " + title + "\r\nTopic: " + topic + "\r\nAuthor: " + author + "\r\nDate: " + lastEdit + "\r\n------------\r\n" + message + "\r\n";
+		return s;
+		
+	}
 
 
 }

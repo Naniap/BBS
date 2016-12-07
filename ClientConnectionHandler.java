@@ -162,8 +162,8 @@ public class ClientConnectionHandler extends Thread {
 	
 	public void setMessage(String content, String topic, String title, User author, Date date)
 	{
-		this.newMessage = new Message(content, topic, title, author, date );
-		this.hasMessage = true;
+		//this.newMessage = new Message(content, topic, title, author, date );
+		//this.hasMessage = true;
 		messageList.add(newMessage);
 	}
 	
@@ -210,7 +210,7 @@ public class ClientConnectionHandler extends Thread {
 	{
 		for(int x = 0; x < messageList.size(); x++)
 		{
-			if(m.titleMatches(messageList.get(x).title))
+			if(m.titleMatches(messageList.get(x).topic))
 				return true;
 		}
 		return false;
@@ -266,14 +266,16 @@ public class ClientConnectionHandler extends Thread {
     		osw.write("\r\nPassword: ");
     		osw.flush();
     		uPass = scanner.nextLine();
-    		
-    		tempUser = new User (uName, uPass);
+    		UserDAOImpl uDAO = new UserDAOImpl();
+    		User tempUser = uDAO.login(uName,SQLConnect.sha512_Encrpyt(uPass, uName.substring(1)));
+    		//tempUser = new User (uName, uPass);
+    		System.out.println(tempUser.getUserName());
     		if(containsLoggedInUser(tempUser))
     		{
     			osw.write("\r\nSorry, "+tempUser.name+" is already logged in.\r\n");
         		osw.flush();
     		}
-    		else if(containsUser(tempUser) && tempUser.passwordMatches(uPass))
+    		else if(tempUser != null)
     		{
     			currentUser = tempUser;
     			isLoggedIn = true;
@@ -296,6 +298,11 @@ public class ClientConnectionHandler extends Thread {
 	
 	public void signUpOption() throws IOException
 	{
+		if (isLoggedIn) {
+			osw.write("\r\nYou're already logged in. \r\n");
+			osw.flush();
+			return;
+		}
 		osw.write("Sign up:\r\n");
 		osw.write("User name: ");
 		osw.flush();
@@ -304,7 +311,10 @@ public class ClientConnectionHandler extends Thread {
 		osw.flush();
 		uPass = scanner.nextLine();
 		
-		tempUser = new User (uName, uPass);
+		tempUser = new User (uName, SQLConnect.sha512_Encrpyt(uPass, uName.substring(1)));
+		//Create a new username here on database.
+		UserDAOImpl uDAO = new UserDAOImpl();
+		uDAO.insert(tempUser);
 		if(containsUser(tempUser))
 		{
     		osw.write("\r\nSorry, this user already exists. \r\n");
@@ -360,7 +370,9 @@ public class ClientConnectionHandler extends Thread {
 			mDate = new Date();
 			mAuthor = this.currentUser;
 			
-			setMessage(mContent, mTopic, mTitle, mAuthor, mDate);
+			//setMessage(mContent, mTopic, mTitle, mAuthor, mDate);
+			//we want to create a new message in here that is posted to the databases as well as added to the array list
+			Message msg = new Message(mContent, mTopic, mTitle, mAuthor);
 			osw.write("\r\nMessage \""+ mTitle + "\" posted.\r\n");
 			osw.flush();
 		}
@@ -432,7 +444,7 @@ public class ClientConnectionHandler extends Thread {
 		for(int x = 0; x < userList.size(); x++)
 		{
 			osw.write(userList.get(x).name + "\r\n");
-			osw.write(userList.get(x).password + "\r\n\r\n");
+			//osw.write(userList.get(x).password + "\r\n\r\n");
 
 		}
 	}
@@ -444,7 +456,7 @@ public class ClientConnectionHandler extends Thread {
 		for(int x = 0; x < loggedInUserList.size(); x++)
 		{
 			osw.write(loggedInUserList.get(x).name + "\r\n");
-			osw.write(loggedInUserList.get(x).password + "\r\n\r\n");
+			//osw.write(loggedInUserList.get(x).password + "\r\n\r\n");
 
 		}
 	}
