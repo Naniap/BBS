@@ -23,6 +23,8 @@ public class Message {
 		this.topic = topic;
 		this.title = title;
 		this.author = author.getUserName();
+		this.postedTime = new Timestamp(System.currentTimeMillis());
+		this.lastEdit = new Timestamp(System.currentTimeMillis());
 	}
 	public String getTitle() {
 		return title;

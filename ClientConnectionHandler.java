@@ -269,7 +269,7 @@ public class ClientConnectionHandler extends Thread {
     		UserDAOImpl uDAO = new UserDAOImpl();
     		User tempUser = uDAO.login(uName,SQLConnect.sha512_Encrpyt(uPass, uName.substring(1)));
     		//tempUser = new User (uName, uPass);
-    		System.out.println(tempUser.getUserName());
+
     		if(containsLoggedInUser(tempUser))
     		{
     			osw.write("\r\nSorry, "+tempUser.name+" is already logged in.\r\n");
@@ -372,7 +372,10 @@ public class ClientConnectionHandler extends Thread {
 			
 			//setMessage(mContent, mTopic, mTitle, mAuthor, mDate);
 			//we want to create a new message in here that is posted to the databases as well as added to the array list
+			MessageDAOImpl mDAO = new MessageDAOImpl();
 			Message msg = new Message(mContent, mTopic, mTitle, mAuthor);
+			mDAO.insert(msg);
+			messageList.add(msg);
 			osw.write("\r\nMessage \""+ mTitle + "\" posted.\r\n");
 			osw.flush();
 		}

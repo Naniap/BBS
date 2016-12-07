@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 
 
 
@@ -87,6 +88,26 @@ public class UserDAOImpl implements UserDAO {
 		catch (SQLException e) {
 			System.out.println(e);
 		}
+		return null;
+	}
+	@Override
+	public ArrayList<User> selectAll() {
+		connection = getConnection();
+		try {
+			ArrayList<User> usrArr = new ArrayList<>();
+			PreparedStatement pstmt = connection.prepareStatement("SELECT id, username, password, lastlogin FROM login");
+			ResultSet rs = pstmt.executeQuery();
+			while (rs.next()) {
+				int id = rs.getInt(1);
+				String name = rs.getString(2);
+				String password = rs.getString(3);
+				Timestamp lastLogin = rs.getTimestamp(4);
+				User usr = new User(id, name, password, lastLogin);
+				usrArr.add(usr);
+			}
+			return usrArr;
+		}
+		catch (SQLException e) {}
 		return null;
 	}
  

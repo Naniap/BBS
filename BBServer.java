@@ -138,9 +138,11 @@ public class BBServer
     {
     	//TODO this loads the users and messages from database.
     	// for now, it will create empty lists.
-    	
-    	users = new ArrayList<User>();
-        messages = new ArrayList<Message>();
+    	MessageDAOImpl mDAO = new MessageDAOImpl();
+        messages = mDAO.selectAll();
+        UserDAOImpl uDAO = new UserDAOImpl();
+        users = uDAO.selectAll();
+        //messages = new ArrayList<Message>();
     }
     
     private void updateDatabase()
@@ -191,6 +193,9 @@ public class BBServer
 	{
 		//BBServer BBS = new BBServer(Integer.parseInt(args[0]));
 		BBServer BBS = new BBServer(666);
+		for (Message m : BBS.messages)  {
+			System.out.println(m.getMessage());
+		}
 		System.out.println("Bulletin Board Server Initialized");
 		
 		try
@@ -216,7 +221,7 @@ public class BBServer
                 BBS.setMessages();
                 
                 //update all clients' userList
-                BBS.setUsers();
+               // BBS.setUsers();
                 
                 //update all clients' loggedInUserList
                 BBS.setLoggedInUsers();

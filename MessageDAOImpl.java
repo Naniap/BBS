@@ -32,8 +32,9 @@ public class MessageDAOImpl implements MessageDAO {
     }
 	@Override
 	public void insert(Message msg) {
+		connection = getConnection();
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO message (message, topic, author, creation_date, last_edit, title) VALUES (?, ?, ?, ?, ?, ?)");
+            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO message (message, topic, author, create_date, last_edit, title) VALUES (?, ?, ?, ?, ?, ?)");
             preparedStatement.setString(1, msg.getMessage());
             preparedStatement.setString(2, msg.getTopic());
             preparedStatement.setString(3, msg.getAuthor());
