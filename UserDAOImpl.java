@@ -2,6 +2,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 
 
 
@@ -53,5 +54,20 @@ public class UserDAOImpl implements UserDAO {
             } catch (Exception e) { 
             }
     }
+	@Override
+	public void update(User user, Timestamp time) {
+		connection = getConnection();
+		try {
+			PreparedStatement pstmt = connection.prepareStatement("UPDATE user SET username = ?, password = ?, lastlogin = ? WHERE id = ?");
+			pstmt.setString(1, user.getUserName());
+			pstmt.setString(2, user.getPassword());
+			pstmt.setTimestamp(3, user.getLastLogin());
+			pstmt.setInt(4, user.getId());
+			pstmt.executeUpdate();
+		}
+		catch (SQLException e) {
+			System.out.println(e);
+		}
+	}
  
 }

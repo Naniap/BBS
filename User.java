@@ -1,7 +1,7 @@
 import java.sql.Timestamp;
 
 public class User {
-
+	UserDAOImpl uDAO = new UserDAOImpl();
 	private int id;
 	private String userName;
 	private Timestamp lastLogin;
@@ -11,25 +11,24 @@ public class User {
 	}
 	public void setPassword(String password) {
 		this.password = password;
+		uDAO.update(this, lastLogin);
 	}
 	public Timestamp getLastLogin() {
 		return lastLogin;
 	}
 	public void setLastLogin(Timestamp lastLogin) {
 		this.lastLogin = lastLogin;
+		uDAO.update(this, lastLogin);
 	}
 	public String getUserName() {
 		return userName;
 	}
 	public void setUserName(String userName) {
 		this.userName = userName;
+		uDAO.update(this, lastLogin);
 	}
 	public int getId() {
 		return id;
 	}
-	public void setId(int id) {
-		this.id = id;
-	}
-	
 	
 }

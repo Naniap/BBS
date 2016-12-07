@@ -24,6 +24,7 @@ public class Message {
 	}
 	public void setMessage(String message) {
 		Timestamp time = new Timestamp(System.currentTimeMillis());
+		lastEdit = time;
 		this.message = message;
 		mDAO.update(this, time);
 	}
@@ -32,6 +33,7 @@ public class Message {
 	}
 	public void setTopic(String topic) {
 		Timestamp time = new Timestamp(System.currentTimeMillis());
+		lastEdit = time;
 		this.topic = topic;
 		mDAO.update(this, time);
 	}
@@ -51,6 +53,7 @@ public class Message {
 	}
 	public void setAuthor(String author) {
 		Timestamp time = new Timestamp(System.currentTimeMillis());
+		lastEdit = time;
 		this.author = author;
 		mDAO.update(this, time);
 	}
