@@ -193,9 +193,6 @@ public class BBServer
 	{
 		//BBServer BBS = new BBServer(Integer.parseInt(args[0]));
 		BBServer BBS = new BBServer(666);
-		for (Message m : BBS.messages)  {
-			System.out.println(m.getMessage());
-		}
 		System.out.println("Bulletin Board Server Initialized");
 		
 		try

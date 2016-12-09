@@ -34,10 +34,11 @@ import java.awt.Font;
 
 public class BillBoardClient implements ActionListener
 {
-	private InputStream serverInput;
-	private OutputStream serverOutput;
-	private Scanner scan;
-	private OutputStreamWriter osw;
+	private Socket sock = new Socket("localhost", 666);
+	private InputStream serverInput = sock.getInputStream();
+	private OutputStream serverOutput = sock.getOutputStream();
+	private Scanner scan = new Scanner (serverInput);
+	private OutputStreamWriter osw = new OutputStreamWriter(serverOutput);
 	
 	static Scanner Scan = new Scanner(System.in);
 
@@ -166,6 +167,13 @@ public class BillBoardClient implements ActionListener
 	     {
 	    	 String uName = usernameField.getText();
 	    	 String pWord = passwordField.getText();
+	    	 try {
+	    		 osw.write(uName + pWord + "\r\n");
+	    		 osw.flush();
+	    	 }
+	    	 catch (IOException ex) {
+	    		 System.out.println(ex);
+	    	 }
 	     }
 		 
 	     else if(e.getSource() == AddAccButton)
