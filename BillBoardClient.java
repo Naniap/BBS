@@ -46,11 +46,11 @@ public class BillBoardClient implements ActionListener
     String password = "";
     
     JPanel Panel;
-    ImageIcon Main = new ImageIcon("Main.jpg");
-    ImageIcon LogIn = new ImageIcon("LogIn.png");
-    ImageIcon LogInPressed = new ImageIcon("LogIn_Pressed.png");
-    ImageIcon Add = new ImageIcon("AddAccount.png");
-    ImageIcon AddPressed = new ImageIcon("AddAccount_Pressed.png");
+    ImageIcon Main = new ImageIcon("./src/Main.jpg");
+    ImageIcon LogIn = new ImageIcon("./src/LogIn.png");
+    ImageIcon LogInPressed = new ImageIcon("./src/LogIn_Pressed.png");
+    ImageIcon Add = new ImageIcon("./src/AddAccount.png");
+    ImageIcon AddPressed = new ImageIcon("./src/AddAccount_Pressed.png");
     
     JButton LogInButton;
     JButton AddAccButton;
