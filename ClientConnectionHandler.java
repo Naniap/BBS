@@ -475,8 +475,52 @@ public class ClientConnectionHandler extends Thread {
 	{
 		if(isLoggedIn)
 		{
-			osw.write("Search by Author: TODO\r\n");
+			osw.write("Enter author:\r\n");
 			osw.flush();
+			
+			
+			ArrayList<Message> matches = new ArrayList<Message>();
+			String searchAuthor = scanner.nextLine();
+			
+			
+			for(int x = 0; x < messageList.size(); x++)
+			{
+				if(messageList.get(x).getAuthor().equalsIgnoreCase(searchAuthor))
+					matches.add(messageList.get(x));
+			}
+			
+			if(matches.size() == 0)
+			{
+				osw.write("No messages to display.\r\n");
+				osw.flush();
+			}
+			else
+			{
+				osw.write("\r\n Messages with author" + searchAuthor + "\r\n");
+				osw.flush();
+				for(int x = 0; x < matches.size(); x++)
+				{
+					//this will probably show more details. TODO
+					osw.write((x+1) + " " + matches.get(x).title + "\r\n");
+				}
+				osw.write("\r\n Please choose a message, 1 - "+ matches.size() + "\r\n");
+				osw.flush();
+				
+				option = scanner.nextLine();
+				
+				validChoice = false;
+				for(int x = 0; x < matches.size(); x++)
+					if(Integer.parseInt(option) == x+1)
+					{
+						osw.write("\r\n"+matches.get(x).displayString()+"\r\n");
+						osw.flush();
+						validChoice = true;
+					}
+				if(!validChoice)
+				{
+					invalidOption();
+				}
+			}
 			
 		}
 		else
