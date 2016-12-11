@@ -219,7 +219,7 @@ public class ClientConnectionHandler extends Thread {
 	}
 	
 	
-	//menu options
+	//menu options...
 	public void signInOption() throws IOException
 	{
 		osw.write("Log in:\r\n");
@@ -357,7 +357,7 @@ public class ClientConnectionHandler extends Thread {
 		
 	}
 	
-	public void viewMessagesOption() throws IOException
+	public void viewMessagesOption() throws IOException//DEPRECATED
 	{
 		
 		if(isLoggedIn)
@@ -412,8 +412,54 @@ public class ClientConnectionHandler extends Thread {
 	{
 		if(isLoggedIn)
 		{
-			osw.write("Display recent messages: TODO\r\n");
+			osw.write("Display recent messages:\r\n");
 			osw.flush();
+			
+			ArrayList<Message> recentMessages = new ArrayList<Message>();
+			for(int x = 0; x < 10; x++)
+			{
+				//TODO I want to rewrite this to incorporate the timeStamp.
+				// right now it just takes the messages from the "top" of the arraylist.
+				try{
+					recentMessages.add(messageList.get(messageList.size() - (1 + x)));
+				}
+				catch( IndexOutOfBoundsException e)
+				{}
+			}
+			
+			if(recentMessages.size() == 0)
+			{
+				osw.write("No messages to display.\r\n");
+				osw.flush();
+			}
+			else
+			{
+				osw.write("\r\n Most recent messages by date\r\n");
+				osw.flush();
+				for(int x = 0; x < recentMessages.size(); x++)
+				{
+					//this will probably show more details. TODO
+					osw.write((x+1) + " " + recentMessages.get(x).getPostedTime() + " : "+ recentMessages.get(x).title +"\r\n");
+				}
+				osw.write("\r\n Please choose a message, 1 - "+ recentMessages.size() + "\r\n");
+				osw.flush();
+				
+				option = scanner.nextLine();
+				
+				validChoice = false;
+				for(int x = 0; x < recentMessages.size(); x++)
+					if(Integer.parseInt(option) == x+1)
+					{
+						osw.write("\r\n"+recentMessages.get(x).displayString()+"\r\n");
+						osw.flush();
+						validChoice = true;
+					}
+				if(!validChoice)
+				{
+					invalidOption();
+				}
+			}
+			
 			
 		}
 		else
@@ -422,8 +468,7 @@ public class ClientConnectionHandler extends Thread {
 			osw.flush();
 		}
 	}
-	
-	
+
 	public void viewAllMessagesOption() throws IOException
 	{
 		if(isLoggedIn)
@@ -589,7 +634,6 @@ public class ClientConnectionHandler extends Thread {
 		}
 	}
 	
-	
 	public void viewAllUsersOption() throws IOException
 	{
 		osw.write("USERS:\r\n");
@@ -620,6 +664,8 @@ public class ClientConnectionHandler extends Thread {
 		osw.write("Goodbye.\r\n");
 		osw.flush();
 	}
+	//...end menu options
+	
 	
 	public void invalidOption() throws IOException
 	{
@@ -683,7 +729,7 @@ public class ClientConnectionHandler extends Thread {
 	    
 	    //test options
 	    osw.write("9. VIEW ALL USERS\r\n");
-	    osw.write("10. VIEW ACTIVE USERS\r\n");
+	    osw.write("0. VIEW ACTIVE USERS\r\n");
 	    
 	    osw.write("...Or type exit to quit.\r\n");
 	    
@@ -719,7 +765,7 @@ public class ClientConnectionHandler extends Thread {
 		//test options
     	else if(o.equals("9"))
     	{viewAllUsersOption();}
-    	else if(o.equals("10"))
+    	else if(o.equals("0"))
     	{viewActiveUsersOption();}
 		
 		//exit option
