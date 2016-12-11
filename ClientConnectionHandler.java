@@ -92,47 +92,15 @@ public class ClientConnectionHandler extends Thread {
             osw.write("This is the development, pre-GUI configuration for testing\r\n");
             
             osw.flush();
-            
-           
-
-                                   
+                               
             //loop to continue asking options
             while(!option.equalsIgnoreCase("exit"))
             {
-            	osw.write("\r\n\r\nPlease enter an option:\r\n");
-                osw.write("1. Log in\r\n");
-                osw.write("2. Sign up\r\n");
-                osw.write("3. Log out\r\n");
-                osw.write("4. Post Message\r\n");
-                osw.write("5. View recent messages\r\n");
-                osw.write("6. VIEW ALL USERS\r\n");
-                osw.write("7. VIEW ACTIVE USERS\r\n");
-                
-                osw.write("...Or type exit to quit.\r\n");
-                
-
-                
-                osw.flush();
+            	displayOptionMenu();
+            	
                 option = scanner.nextLine();
             	
-            	if(option.equals("1"))
-            	{signInOption();}
-            	else if(option.equals("2"))
-            	{signUpOption();}
-            	else if(option.equals("3"))
-            	{signOutOption();}
-            	else if(option.equals("4"))
-            	{postMessageOption();}
-            	else if(option.equals("5"))
-            	{viewMessagesOption();}
-            	else if(option.equals("6"))
-            	{viewAllUsersOption();}
-            	else if(option.equals("7"))
-            	{viewActiveUsersOption();}
-            	else if(option.equalsIgnoreCase("exit"))
-            	{exitOption();}
-            	else
-            	{invalidOption();}
+            	processOption(option);
             }
 
         }
@@ -440,6 +408,100 @@ public class ClientConnectionHandler extends Thread {
 		}
 	}
 	
+	public void viewRecentMessagesOption() throws IOException
+	{
+		if(isLoggedIn)
+		{
+			osw.write("Display recent messages: TODO\r\n");
+			osw.flush();
+			
+		}
+		else
+		{
+			osw.write("Please Sign in to display messages.\r\n");
+			osw.flush();
+		}
+	}
+	
+	
+	public void viewAllMessagesOption() throws IOException
+	{
+		if(isLoggedIn)
+		{
+			osw.write("Display all messages:\r\n");
+			osw.flush();
+			
+			displaySize = messageList.size();
+			
+			if(displaySize == 0)
+			{
+				osw.write("No messages to display.\r\n");
+				osw.flush();
+			}
+			else
+			{
+				for(int x = 0; x < displaySize; x++)
+				{
+					//this will probably show more details.
+					osw.write((x+1) + " " + messageList.get(x).title + "\r\n");
+				}
+				osw.write("\r\n Please choose a message, 1 - "+ displaySize + "\r\n");
+				osw.flush();
+				
+				option = scanner.nextLine();
+				
+				validChoice = false;
+				for(int x = 0; x < displaySize; x++)
+					if(Integer.parseInt(option) == x+1)
+					{
+						osw.write("\r\n"+messageList.get(x).displayString()+"\r\n");
+						osw.flush();
+						validChoice = true;
+					}
+				if(!validChoice)
+				{
+					invalidOption();
+				}
+			}
+		}
+		else
+		{
+			osw.write("Please Sign in to display messages.\r\n");
+			osw.flush();
+		}
+	}
+	
+	public void searchByAuthorOption() throws IOException
+	{
+		if(isLoggedIn)
+		{
+			osw.write("Search by Author: TODO\r\n");
+			osw.flush();
+			
+		}
+		else
+		{
+			osw.write("Please Sign in to search messages.\r\n");
+			osw.flush();
+		}
+	}
+	
+	public void searchByTopicOption() throws IOException
+	{
+		if(isLoggedIn)
+		{
+			osw.write("Search by topic: TODO\r\n");
+			osw.flush();
+			
+		}
+		else
+		{
+			osw.write("Please Sign in to search messages.\r\n");
+			osw.flush();
+		}
+	}
+	
+	
 	public void viewAllUsersOption() throws IOException
 	{
 		osw.write("USERS:\r\n");
@@ -517,6 +579,73 @@ public class ClientConnectionHandler extends Thread {
 		
 		currentUser = null;
 	}
+	
+	public void displayOptionMenu() throws IOException
+	{
+		osw.write("\r\n\r\nPlease enter an option:\r\n");
+	    osw.write("1. Sign in\r\n");
+	    osw.write("2. Sign up\r\n");
+	    osw.write("3. Sign out\r\n");
+	    osw.write("4. Post Message\r\n");
+	    osw.write("5. View recent messages\r\n");
+	    osw.write("6. View all messages\r\n");
+	    osw.write("7. Search messages by author/r/n");
+	    osw.write("8. Search messages by topic/r/n");
+
+	    
+	    //test options
+	    osw.write("9. VIEW ALL USERS\r\n");
+	    osw.write("10. VIEW ACTIVE USERS\r\n");
+	    
+	    osw.write("...Or type exit to quit.\r\n");
+	    
+
+	    
+	    osw.flush();
+	}
+	
+	public void processOption(String o) throws IOException
+	{
+		o = eliminateSpaces(o);
+		
+		if(o.equals("1") || o.equalsIgnoreCase("signin") )
+    	{signInOption();}
+    	else if(o.equals("2") || o.equalsIgnoreCase("signup") )
+    	{signUpOption();}
+    	else if(o.equals("3") || o.equalsIgnoreCase("signout") )
+    	{signOutOption();}
+    	else if(o.equals("4") || o.equalsIgnoreCase("postmessage") || o.equalsIgnoreCase("post"))
+    	{postMessageOption();}
+    	else if(o.equals("5") || o.equalsIgnoreCase("viewrecentmessages") || o.equalsIgnoreCase("viewrecent"))
+    	{viewRecentMessagesOption();}
+    	else if(o.equals("6") || o.equalsIgnoreCase("viewallmessages") || o.equalsIgnoreCase("viewall"))
+    	{viewAllMessagesOption();}
+    	else if(o.equals("7") || o.equalsIgnoreCase("searchbyauthor") || o.equalsIgnoreCase("searchauthor"))
+    	{searchByAuthorOption();}
+    	else if(o.equals("8") || o.equalsIgnoreCase("searchbytopic") || o.equalsIgnoreCase("searchtopic"))
+    	{searchByTopicOption();}
+		
+		
+		
+		
+		//test options
+    	else if(o.equals("9"))
+    	{viewAllUsersOption();}
+    	else if(o.equals("10"))
+    	{viewActiveUsersOption();}
+		
+		//exit option
+    	else if(o.equalsIgnoreCase("exit"))
+    	{exitOption();}
+    	else
+    	{invalidOption();}
+	}
+	
+	public String eliminateSpaces(String s)
+	{
+		return s.replaceAll(" ", "");
+	}
+	
 	
 	
 
