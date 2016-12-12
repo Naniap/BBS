@@ -1,5 +1,6 @@
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
@@ -39,7 +40,7 @@ public class ClientConnectionHandler extends Thread {
     private OutputStream clientOutput;
     private Scanner scanner;
     private OutputStreamWriter osw;
-    
+    private ObjectOutputStream oos;
     private String option = "";
     
     private String uName = "";
@@ -74,6 +75,7 @@ public class ClientConnectionHandler extends Thread {
             clientOutput = connection.getOutputStream();
             scanner = new Scanner(clientInput);
             osw = new OutputStreamWriter(clientOutput);
+            oos = new ObjectOutputStream(clientOutput);
         }
         catch(IOException e)
         {
@@ -97,7 +99,8 @@ public class ClientConnectionHandler extends Thread {
             while(!option.equalsIgnoreCase("exit"))
             {
             	displayOptionMenu();
-            	
+            	if (!scanner.hasNextLine())
+            		return;
                 option = scanner.nextLine();
             	
             	processOption(option);
@@ -106,7 +109,8 @@ public class ClientConnectionHandler extends Thread {
         }
         catch(IOException e)
         {
-            System.out.println("Error reading/writing from/to client");
+            System.out.println("Error reading/writing from/to client IN RUN");
+            e.printStackTrace();
         }
 
 	}
@@ -235,6 +239,10 @@ public class ClientConnectionHandler extends Thread {
     		osw.flush();
     		uPass = scanner.nextLine();
     		UserDAOImpl uDAO = new UserDAOImpl();
+    		if (uName.length() <= 0) {
+    			osw.write("Invalid username.\r\n");
+    			osw.flush();
+    		}
     		User tempUser = uDAO.login(uName,SQLConnect.sha512_Encrpyt(uPass, uName.substring(1)));
     		//tempUser = new User (uName, uPass);
 
@@ -248,8 +256,11 @@ public class ClientConnectionHandler extends Thread {
     			currentUser = tempUser;
     			isLoggedIn = true;
     			loggedInUserList.add(currentUser);
-    			osw.write("\r\nLogged in as "+currentUser.name+".\r\n");
+    			osw.write("\r\nLogged in as " + currentUser.name + ".\r\n");
         		osw.flush();
+        		//oos.writeObject(currentUser);
+        		//oos.flush();
+        		
     		}
     		else
     		{
@@ -741,7 +752,7 @@ public class ClientConnectionHandler extends Thread {
 	public void processOption(String o) throws IOException
 	{
 		o = eliminateSpaces(o);
-		
+		System.out.println("Server received: " + o);
 		if(o.equals("1") || o.equalsIgnoreCase("signin") )
     	{signInOption();}
     	else if(o.equals("2") || o.equalsIgnoreCase("signup") )
@@ -758,7 +769,9 @@ public class ClientConnectionHandler extends Thread {
     	{searchByAuthorOption();}
     	else if(o.equals("8") || o.equalsIgnoreCase("searchbytopic") || o.equalsIgnoreCase("searchtopic"))
     	{searchByTopicOption();}
-		
+    	else if (o.equals("getarray")) {
+    		oos.writeObject(messageList);
+    	}
 		
 		
 		

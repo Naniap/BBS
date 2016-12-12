@@ -11,9 +11,12 @@ import java.awt.image.ImageObserver;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 
@@ -27,6 +30,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 import java.awt.Font;
@@ -39,7 +43,9 @@ public class BillBoardClient implements ActionListener
 	private OutputStream serverOutput = sock.getOutputStream();
 	private Scanner scan = new Scanner (serverInput);
 	private OutputStreamWriter osw = new OutputStreamWriter(serverOutput);
-	
+	private ObjectOutputStream oos = new ObjectOutputStream(serverOutput);
+	private ObjectInputStream ois = new ObjectInputStream(serverInput);
+	public boolean loggedIn = false;
 	static Scanner Scan = new Scanner(System.in);
 
 
@@ -57,7 +63,7 @@ public class BillBoardClient implements ActionListener
     JButton AddAccButton;
     JLabel exitButton;
     
-    JFrame frame;
+    static JFrame frame;
     private JTextField usernameField;
     private JTextField passwordField;
 	
@@ -85,10 +91,29 @@ public class BillBoardClient implements ActionListener
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			frame.setVisible(true);
 			
-			
+	    	 while (true) {
+	    		 String message = scan.nextLine();
+	    		 System.out.println(message);
+	    		 if (message.contains("Logged in as")) {
+	    			 loggedIn = true;
+	    			 MainMenu mm = new MainMenu();
+	    			 mm.getFrame().setVisible(true);
+	    			 frame.setVisible(false);
+	    			 osw.write("getarray\r\n");
+	    			 osw.flush();
+	    			 try {
+						ArrayList<Message> messages = (ArrayList<Message>)ois.readObject();
+						for (Message m : messages) {
+							System.out.println(m.displayString());
+						}
+					} catch (ClassNotFoundException e) {
+						e.printStackTrace();
+					}
+	    		 }
+	    	 }
 			//Scanner keyboard = new Scanner(System.in);
 	        /*    
-			while (cont == true)
+			while (cont == true)s
 			{
 				
 				message = keyboard.next();
@@ -138,7 +163,7 @@ public class BillBoardClient implements ActionListener
 		panel.add(usernameField);
 		usernameField.setColumns(10);
 		
-		passwordField = new JTextField();
+		passwordField = new JPasswordField();
 		passwordField.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		passwordField.setBounds(387, 426, 397, 47);
 		panel.add(passwordField);
@@ -167,12 +192,17 @@ public class BillBoardClient implements ActionListener
 	     {
 	    	 String uName = usernameField.getText();
 	    	 String pWord = passwordField.getText();
+	    	 String option = "signin";
 	    	 try {
-	    		 osw.write(uName + pWord + "\r\n");
+	    		 osw.write(option + "\r\n");
+	    		 osw.write(option + "\r\n");
+	    		 osw.write(uName + "\r\n");
+	    		 osw.write(pWord + "\r\n");
 	    		 osw.flush();
+	    		 //Object o = ois.readObject();
 	    	 }
-	    	 catch (IOException ex) {
-	    		 System.out.println(ex);
+	    	 catch (IOException ex /*| ClassNotFoundException ex*/) {
+	    		 ex.printStackTrace();
 	    	 }
 	     }
 		 
@@ -180,6 +210,9 @@ public class BillBoardClient implements ActionListener
 	     {
 	    	 
 	     }
+	}
+	public static void exit() {
+		frame.dispose();
 	}
 }
 

@@ -1,6 +1,8 @@
+import java.io.Serializable;
 import java.sql.Timestamp;
 
-public class Message {
+public class Message implements Serializable {
+	private static final long serialVersionUID = 4757922245852996182L;
 	MessageDAOImpl mDAO = new MessageDAOImpl();
 	private int id;
 	private String author;

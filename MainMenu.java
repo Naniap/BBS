@@ -10,6 +10,7 @@ import java.io.IOException;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.JLabel;
 import javax.swing.JButton;
 import javax.swing.border.Border;
@@ -19,10 +20,10 @@ public class MainMenu implements MouseListener,ActionListener
 {
 	JFrame frame;
 	
-	ImageIcon homescreen = new ImageIcon("HomeScreen.png");
-	ImageIcon LogOut = new ImageIcon("LogOut.png");
-	ImageIcon NewMessage = new ImageIcon("new-message.png");
-	ImageIcon DisplayAllPosts = new ImageIcon("display-all.png");
+	ImageIcon homescreen = new ImageIcon("./src/HomeScreen.png");
+	ImageIcon LogOut = new ImageIcon("./src/LogOut.png");
+	ImageIcon NewMessage = new ImageIcon("./src/new-message.png");
+	ImageIcon DisplayAllPosts = new ImageIcon("./src/display-all.png");
 	
 	JLabel newMessage;
 	JLabel displayAllPosts;
@@ -126,17 +127,11 @@ public class MainMenu implements MouseListener,ActionListener
 		// TODO Auto-generated method stub
 		if (a.getSource() == logOutButton)
 		{
-			try 
-			{
-				new BillBoardClient("127.0.0.1");
-			} 
-			catch (IOException e) 
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			frame.setVisible(false);
-			
+			frame.dispose();
+			BillBoardClient.exit();
 		}
+	}
+	public JFrame getFrame() {
+		return frame;
 	}
 }

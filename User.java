@@ -1,6 +1,8 @@
+import java.io.Serializable;
 import java.sql.Timestamp;
 
-public class User {
+public class User implements Serializable {
+	private static final long serialVersionUID = 3319852351272211903L;
 	UserDAOImpl uDAO = new UserDAOImpl();
 	private int id;
 	public String name;

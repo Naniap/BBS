@@ -1,3 +1,4 @@
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -6,7 +7,11 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
-public class MessageDAOImpl implements MessageDAO {
+public class MessageDAOImpl implements MessageDAO, Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3879133265006165149L;
 	private final static String password = "Ax20A]sd[fSds";
 	private final static String address = "phantomelite.com";
 	private final static String dbName = "BBS";
