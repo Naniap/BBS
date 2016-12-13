@@ -64,7 +64,7 @@ public class MainApp implements ActionListener {
 		frame.setTitle("Bulletin Board Client");
 		frame.setContentPane(makePanel());
 		frame.pack();
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.setVisible(true);
 		frame.addWindowListener(new java.awt.event.WindowAdapter() {
 			@Override
@@ -161,14 +161,13 @@ public class MainApp implements ActionListener {
 				osw.write(uName + "\r\n");
 				osw.write(pWord + "\r\n");
 				osw.flush();
-				// Object o = ois.readObject();
-			} catch (IOException ex /* | ClassNotFoundException ex */) {
+			} catch (IOException ex ) {
 				ex.printStackTrace();
 			}
 		}
 
 		else if (e.getSource() == AddAccButton) {
-
+			new AddAccount(this.osw, this.frame);
 		}
 	}
 

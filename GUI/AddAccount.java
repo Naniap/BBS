@@ -15,7 +15,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 public class AddAccount implements ActionListener, MouseListener {
@@ -24,17 +26,16 @@ public class AddAccount implements ActionListener, MouseListener {
 	private Scanner scan;
 	private OutputStreamWriter osw;
 
-	static Scanner Scan = new Scanner(System.in);
 
 	String userName = "";
 	String password = "";
 
 	JPanel Panel;
 
-	ImageIcon Background = new ImageIcon("AddAccount.jpg");
-	ImageIcon Add = new ImageIcon("AddAccount.png");
-	ImageIcon back = new ImageIcon("Back.png");
-	ImageIcon backpressed = new ImageIcon("Back_Pressed.png");
+	ImageIcon Background = new ImageIcon("./src/img/AddAccount.jpg");
+	ImageIcon Add = new ImageIcon("./src/img/AddAccount.png");
+	ImageIcon back = new ImageIcon("./src/img/Back.png");
+	ImageIcon backpressed = new ImageIcon("./src/img/Back_Pressed.png");
 
 	JButton AddAccount;
 	JLabel backButton;
@@ -48,8 +49,10 @@ public class AddAccount implements ActionListener, MouseListener {
 	private JTextField usernameField;
 	private JTextField passwordField;
 	private JTextField confirmPasswordField;
-
-	public AddAccount() {
+	private JFrame prevFrame;
+	public AddAccount(OutputStreamWriter osw, JFrame prevFrame) {
+		this.osw = osw;
+		this.prevFrame = prevFrame;
 		frame = new JFrame();
 		frame.setLocation(0, 0);
 		frame.setResizable(false);
@@ -67,6 +70,7 @@ public class AddAccount implements ActionListener, MouseListener {
 
 		AddAccount = new JButton(Add);
 		AddAccount.setBounds(480, 552, 212, 44);
+		AddAccount.addActionListener(this);
 		panel.add(AddAccount);
 
 		backButton = new JLabel(back);
@@ -83,12 +87,12 @@ public class AddAccount implements ActionListener, MouseListener {
 		panel.add(usernameField);
 		usernameField.setColumns(10);
 
-		passwordField = new JTextField();
+		passwordField = new JPasswordField();
 		passwordField.setBounds(387, 473, 402, 44);
 		panel.add(passwordField);
 		passwordField.setColumns(10);
 
-		confirmPasswordField = new JTextField();
+		confirmPasswordField = new JPasswordField();
 		confirmPasswordField.setBounds(387, 368, 402, 44);
 		panel.add(confirmPasswordField);
 		confirmPasswordField.setColumns(10);
@@ -96,7 +100,12 @@ public class AddAccount implements ActionListener, MouseListener {
 		JLabel label = new JLabel(Background);
 		label.setBounds(0, 0, 1173, 780);
 		panel.add(label);
-
+		frame.addWindowListener(new java.awt.event.WindowAdapter() {
+			@Override
+			public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+					prevFrame.setVisible(true);
+			}
+		});
 		// TODO Auto-generated method stub
 		return panel;
 	}
@@ -104,7 +113,23 @@ public class AddAccount implements ActionListener, MouseListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == AddAccount) {
-
+			try {
+				if (!passwordField.getText().equals(confirmPasswordField.getText())) {
+					JOptionPane.showMessageDialog(frame, "Please make sure that your passwords match and try again!");
+					return;
+				}
+				osw.write("signup\r\n");
+				osw.write("signup\r\n");
+				osw.write(usernameField.getText() + "\r\n");
+				osw.write(passwordField.getText() + "\r\n");
+				JOptionPane.showMessageDialog(frame, "Account " + usernameField.getText() + " was successfully added.");
+				osw.flush();
+				frame.dispose();
+				prevFrame.setVisible(true);
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 
 	}
@@ -113,15 +138,9 @@ public class AddAccount implements ActionListener, MouseListener {
 	public void mouseClicked(MouseEvent o) {
 		// TODO Auto-generated method stub
 		if (o.getSource() == backButton) {
-			try {
-				new MainApp("127.0.0.1");
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
 			backButton.setVisible(false);
 			frame.setVisible(false);
-
+			prevFrame.setVisible(true);
 		}
 	}
 

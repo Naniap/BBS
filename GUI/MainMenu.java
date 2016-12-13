@@ -132,13 +132,7 @@ public class MainMenu implements MouseListener, ActionListener {
 			new CreatePost(ma, this.frame, userName);
 			frame.setVisible(false);
 		} else if (e.getSource() == displayAllPosts) {
-			try {
-				new MainApp("127.0.0.1");
-			} catch (IOException a) {
-				// TODO Auto-generated catch block
-				a.printStackTrace();
-			}
-			frame.setVisible(false);
+			//do stuff
 		}
 	}
 

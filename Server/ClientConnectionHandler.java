@@ -295,7 +295,7 @@ public class ClientConnectionHandler extends Thread {
 			osw.write("\r\nUser " + tempUser.name + " added.\r\n");
 			osw.flush();
 
-			setNewUser(tempUser);
+			//setNewUser(tempUser);
 		}
 	}
 
