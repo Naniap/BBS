@@ -37,6 +37,7 @@ public class MainApp implements ActionListener {
 	ArrayList<Message> messages;
 	public boolean loggedIn = false;
 	static Scanner Scan = new Scanner(System.in);
+	private boolean firstAction = true;
 
 	String userName = "";
 	String password = "";
@@ -83,7 +84,7 @@ public class MainApp implements ActionListener {
 				osw.write("getarray\r\n");
 				osw.flush();
 				try {
-					scan.nextLine();
+					System.out.println("Consumed: " + scan.nextLine());
 					messages = (ArrayList<Message>) ois.readObject();
 					System.out.println(messages.size());
 					MainMenu mm = new MainMenu(messages, this, userName);
@@ -97,6 +98,14 @@ public class MainApp implements ActionListener {
 				scan.nextLine();
 				try {
 					messages.add((Message)ois.readObject());
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+				}
+			}
+			if (message.contains("Messages with author")) {
+				System.out.println(scan.nextLine());
+				try {
+					messages = (ArrayList<Message>)ois.readObject();
 				} catch (ClassNotFoundException e) {
 					e.printStackTrace();
 				}
@@ -156,7 +165,10 @@ public class MainApp implements ActionListener {
 			String pWord = passwordField.getText();
 			String option = "signin";
 			try {
-				osw.write(option + "\r\n");
+				if (isFirstAction()) {
+					osw.write(option + "\r\n");
+					setFirstAction(false);
+				}
 				osw.write(option + "\r\n");
 				osw.write(uName + "\r\n");
 				osw.write(pWord + "\r\n");
@@ -167,7 +179,7 @@ public class MainApp implements ActionListener {
 		}
 
 		else if (e.getSource() == AddAccButton) {
-			new AddAccount(this.osw, this.frame);
+			new AddAccount(this.osw, this.frame, this);
 		}
 	}
 
@@ -176,5 +188,16 @@ public class MainApp implements ActionListener {
 	}
 	public OutputStreamWriter getOutputStreamWriter() {
 		return osw;
+	}
+
+	public boolean isFirstAction() {
+		return firstAction;
+	}
+
+	public void setFirstAction(boolean firstAction) {
+		this.firstAction = firstAction;
+	}
+	public ArrayList<Message> getMessages() {
+		return messages;
 	}
 }

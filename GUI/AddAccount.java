@@ -50,9 +50,11 @@ public class AddAccount implements ActionListener, MouseListener {
 	private JTextField passwordField;
 	private JTextField confirmPasswordField;
 	private JFrame prevFrame;
-	public AddAccount(OutputStreamWriter osw, JFrame prevFrame) {
+	private MainApp ma;
+	public AddAccount(OutputStreamWriter osw, JFrame prevFrame, MainApp ma) {
 		this.osw = osw;
 		this.prevFrame = prevFrame;
+		this.ma = ma;
 		frame = new JFrame();
 		frame.setLocation(0, 0);
 		frame.setResizable(false);
@@ -118,7 +120,10 @@ public class AddAccount implements ActionListener, MouseListener {
 					JOptionPane.showMessageDialog(frame, "Please make sure that your passwords match and try again!");
 					return;
 				}
-				osw.write("signup\r\n");
+				if (ma.isFirstAction()) {
+					osw.write("signup\r\n");
+					ma.setFirstAction(false);
+				}
 				osw.write("signup\r\n");
 				osw.write(usernameField.getText() + "\r\n");
 				osw.write(passwordField.getText() + "\r\n");

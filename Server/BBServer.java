@@ -124,13 +124,10 @@ public class BBServer {
 	}
 
 	private void loadDatabase() {
-		// TODO this loads the users and messages from database.
-		// for now, it will create empty lists.
 		MessageDAOImpl mDAO = new MessageDAOImpl();
 		messages = mDAO.selectAll();
 		UserDAOImpl uDAO = new UserDAOImpl();
 		users = uDAO.selectAll();
-		// messages = new ArrayList<Message>();
 	}
 
 	private void updateDatabase() {

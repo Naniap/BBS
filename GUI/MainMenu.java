@@ -9,6 +9,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
@@ -45,13 +46,17 @@ public class MainMenu implements MouseListener, ActionListener {
 	JLabel displayAllPosts;
 
 	JButton logOutButton;
+	JButton btnSearchByAuthor;
+	JButton btnSearchByTopic;
 	private JTable table;
     private MainApp ma;
     private String userName;
+    private OutputStreamWriter osw;
 	public MainMenu(ArrayList<Message> messages, MainApp ma, String userName) throws IOException {
 		this.messages = messages;
 		this.ma = ma;
 		this.userName = userName;
+		osw = ma.getOutputStreamWriter();
 		frame = new JFrame();
 		frame.setLocation(0, 0);
 		frame.setResizable(false);
@@ -70,6 +75,18 @@ public class MainMenu implements MouseListener, ActionListener {
 		newMessage = new JLabel(NewMessage);
 		newMessage.setBounds(60, 75, 264, 237);
 		newMessage.addMouseListener(this);
+		
+		btnSearchByAuthor = new JButton();
+		btnSearchByAuthor.setIcon(new ImageIcon("./src/img/Add.png"));
+		btnSearchByAuthor.addActionListener(this);
+		btnSearchByAuthor.setBounds(149, 545, 156, 39);
+		panel.add(btnSearchByAuthor);
+		
+		btnSearchByTopic = new JButton();
+		btnSearchByTopic.setIcon(new ImageIcon("./src/img/Back.png"));
+		btnSearchByTopic.addActionListener(this);
+		btnSearchByTopic.setBounds(149, 493, 126, 39);
+		panel.add(btnSearchByTopic);
 
 		JScrollPane scrollPane_1 = new JScrollPane();
 		scrollPane_1.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -83,19 +100,7 @@ public class MainMenu implements MouseListener, ActionListener {
 		table.setBackground(Color.WHITE);
 		table.setBorder(null);
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		DefaultTableModel tableModel = new DefaultTableModel(new Object[][] {},
-				new String[] { "Topic", "Title", "Author", "Message", "Posted" }) {
-			boolean[] columnEditables = new boolean[] { false, false, false, false, false };
-
-			public boolean isCellEditable(int row, int column) {
-				return columnEditables[column];
-			}
-		};
-		for (Message m : messages) {
-			Object[] data = { m.getTopic(), m.getTitle(), m.getAuthor(), m.getMessage(), m.getPostedTime() };
-			tableModel.addRow(data);
-		}
-		table.setModel(tableModel);
+		table.setModel(updateModel());
 		table.addMouseListener(new MouseAdapter() {
 		    public void mousePressed(MouseEvent me) {
 		        JTable table =(JTable) me.getSource();
@@ -134,6 +139,9 @@ public class MainMenu implements MouseListener, ActionListener {
 		} else if (e.getSource() == displayAllPosts) {
 			//do stuff
 		}
+		if (e.getSource() == btnSearchByAuthor) {
+			System.out.println("Search by author...");
+		}
 	}
 
 	@Override
@@ -166,8 +174,41 @@ public class MainMenu implements MouseListener, ActionListener {
 			frame.dispose();
 			MainApp.exit();
 		}
+		if (a.getSource() == btnSearchByAuthor) {
+			System.out.println("Search by author...");
+			String author = JOptionPane.showInputDialog("Enter a user you which to search: ");
+			try {
+				osw.write("searchbyauthor\r\n");
+				osw.write(author + "\r\n");
+				osw.flush();
+				messages = ma.getMessages();
+				updateModel();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		if (a.getSource() == btnSearchByTopic) {
+			
+		}
 	}
+	public DefaultTableModel updateModel() {
+		DefaultTableModel model =
+				new DefaultTableModel(new Object[][] {},
+						new String[] { "Topic", "Title", "Author", "Message", "Posted" }) {
+					boolean[] columnEditables = new boolean[] { false, false, false, false, false };
 
+					public boolean isCellEditable(int row, int column) {
+						return columnEditables[column];
+					}
+				};
+				for (Message m : messages) {
+					Object[] data = { m.getTopic(), m.getTitle(), m.getAuthor(), m.getMessage(), m.getPostedTime() };
+					model.addRow(data);
+				};
+				return model;
+	}
 	public JFrame getFrame() {
 		return frame;
 	}

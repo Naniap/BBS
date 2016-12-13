@@ -498,16 +498,18 @@ public class ClientConnectionHandler extends Thread {
 				osw.write("No messages to display.\r\n");
 				osw.flush();
 			} else {
-				osw.write("\r\n Messages with author" + searchAuthor + "\r\n");
+				osw.write("Messages with author " + searchAuthor + "\r\n");
 				osw.flush();
-				for (int x = 0; x < matches.size(); x++) {
+				oos.writeObject(matches);
+				oos.flush();
+			//	for (int x = 0; x < matches.size(); x++) {
 					// this will probably show more details. TODO
-					osw.write((x + 1) + " " + matches.get(x).title + "\r\n");
-				}
-				osw.write("\r\n Please choose a message, 1 - " + matches.size() + "\r\n");
-				osw.flush();
+				//	osw.write((x + 1) + " " + matches.get(x).title + "\r\n");
+				//}
+				//osw.write("\r\n Please choose a message, 1 - " + matches.size() + "\r\n");
+				//osw.flush();
 
-				option = scanner.nextLine();
+				/*option = scanner.nextLine();
 
 				validChoice = false;
 				for (int x = 0; x < matches.size(); x++)
@@ -518,12 +520,12 @@ public class ClientConnectionHandler extends Thread {
 					}
 				if (!validChoice) {
 					invalidOption();
-				}
+				}*/
 			}
 
-		} else {
-			osw.write("Please Sign in to search messages.\r\n");
-			osw.flush();
+		//} else {
+			//osw.write("Please Sign in to search messages.\r\n");
+			//osw.flush();
 		}
 	}
 
