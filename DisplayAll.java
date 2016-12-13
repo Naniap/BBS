@@ -109,17 +109,6 @@ public class DisplayAll implements MouseListener
 		if ((a.getSource() == backPressed ) 
 				|| (a.getSource() == backButton))
 		{
-			try 
-			{
-				frame.setVisible(false);
-				new MainMenu();
-				
-			} 
-			catch (IOException e1) 
-			{
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
 		}
 	}
 

@@ -118,33 +118,12 @@ public class CreatePost implements MouseListener,ActionListener
 		if ((a.getSource() == backPressed ) 
 				|| (a.getSource() == backButton))
 		{
-			try 
-			{
-				frame.setVisible(false);
-				new MainMenu();
-				
-			} 
-			catch (IOException e1) 
-			{
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+
 		}
 		
 		if ((a.getSource() == addPressed ) 
 				|| (a.getSource() == addButton))
 		{
-			try 
-			{
-				frame.setVisible(false);
-				new MainMenu();
-				
-			} 
-			catch (IOException e1) 
-			{
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
 		}
 	}
 	@Override
