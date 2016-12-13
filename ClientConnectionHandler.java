@@ -268,7 +268,7 @@ public class ClientConnectionHandler extends Thread {
     			osw.write("Invalid username.\r\n");
     			osw.flush();
     		}
-    		User tempUser = uDAO.login(uName,SQLConnect.sha512_Encrpyt(uPass, uName.substring(1)));
+    		User tempUser = uDAO.login(uName,SQLUtility.sha512_Encrpyt(uPass, uName.substring(1)));
     		//tempUser = new User (uName, uPass);
 
     		if(containsLoggedInUser(tempUser))
@@ -315,7 +315,7 @@ public class ClientConnectionHandler extends Thread {
 		osw.flush();
 		uPass = scanner.nextLine();
 		
-		tempUser = new User (uName, SQLConnect.sha512_Encrpyt(uPass, uName.substring(1)));
+		tempUser = new User (uName, SQLUtility.sha512_Encrpyt(uPass, uName.substring(1)));
 		//Create a new username here on database.
 		UserDAOImpl uDAO = new UserDAOImpl();
 		uDAO.insert(tempUser);
