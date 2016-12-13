@@ -19,16 +19,16 @@ public class ConsoleClient
         
         ConsoleDisplay CD = null;
         
-        /*
+        
         String serverAddress = JOptionPane.showInputDialog("Please"
                 + " enter a Server to connect (DNS name or IP)");
 		
 		String serverPort = JOptionPane.showInputDialog("Please"
                 + " enter the server's port number");
-		*/
+		
         
-        String serverAddress = "localhost";
-        String serverPort = "666";
+        //String serverAddress = "localhost";
+        //String serverPort = "666";
 		
         try
         {

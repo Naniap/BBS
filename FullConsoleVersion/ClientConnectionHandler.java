@@ -7,9 +7,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
 
-// TODO this class is a stub; Dan said he had a cch written so this is the placeholder.
-// for my BBServer to work we need these 3 methods (including the constructor)
-
 
 public class ClientConnectionHandler extends Thread {
 	
