@@ -45,6 +45,7 @@ public class BillBoardClient implements ActionListener
 	private OutputStreamWriter osw = new OutputStreamWriter(serverOutput);
 	private ObjectOutputStream oos = new ObjectOutputStream(serverOutput);
 	private ObjectInputStream ois = new ObjectInputStream(serverInput);
+	ArrayList<Message> messages;
 	public boolean loggedIn = false;
 	static Scanner Scan = new Scanner(System.in);
 
@@ -90,27 +91,37 @@ public class BillBoardClient implements ActionListener
 			frame.pack();
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			frame.setVisible(true);
-			
+			frame.addWindowListener(new java.awt.event.WindowAdapter() {
+			    @Override
+			    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+			        if (JOptionPane.showConfirmDialog(frame, 
+			            "Are you sure to close this window?", "Really Closing?", 
+			            JOptionPane.YES_NO_OPTION,
+			            JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION){
+			            System.exit(0);
+			        }
+			    }
+			});
 	    	 while (true) {
 	    		 String message = scan.nextLine();
 	    		 System.out.println(message);
 	    		 if (message.contains("Logged in as")) {
 	    			 loggedIn = true;
-	    			 MainMenu mm = new MainMenu();
-	    			 mm.getFrame().setVisible(true);
-	    			 frame.setVisible(false);
 	    			 osw.write("getarray\r\n");
 	    			 osw.flush();
 	    			 try {
-						ArrayList<Message> messages = (ArrayList<Message>)ois.readObject();
-						for (Message m : messages) {
-							System.out.println(m.displayString());
-						}
+	    				scan.nextLine();
+						messages = (ArrayList<Message>)ois.readObject();
+						System.out.println(messages.size());
+		    			 MainMenu mm = new MainMenu(messages);
+		    			 mm.getFrame().setVisible(true);
+		    			 frame.setVisible(false);
 					} catch (ClassNotFoundException e) {
 						e.printStackTrace();
 					}
 	    		 }
 	    	 }
+	    	 
 			//Scanner keyboard = new Scanner(System.in);
 	        /*    
 			while (cont == true)s

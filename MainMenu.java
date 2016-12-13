@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -14,10 +15,13 @@ import javax.swing.SwingUtilities;
 import javax.swing.JLabel;
 import javax.swing.JButton;
 import javax.swing.border.Border;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 
 
 public class MainMenu implements MouseListener,ActionListener
 {
+	ArrayList<Message> messages;
 	JFrame frame;
 	
 	ImageIcon homescreen = new ImageIcon("./src/HomeScreen.png");
@@ -29,9 +33,11 @@ public class MainMenu implements MouseListener,ActionListener
 	JLabel displayAllPosts;
 	
 	JButton logOutButton;
+	private JTextField textField;
 	
-	public MainMenu() throws IOException
+	public MainMenu(ArrayList<Message> messages) throws IOException
 	{
+		this.messages = messages;
 		frame = new JFrame();
 		frame.setLocation(0, 0);
 		frame.setResizable(false);
@@ -51,6 +57,11 @@ public class MainMenu implements MouseListener,ActionListener
 		newMessage = new JLabel(NewMessage);
 		newMessage.setBounds(60, 75, 264, 237);
 		newMessage.addMouseListener(this);
+		
+		textField = new JTextField();
+		textField.setBounds(294, 114, 86, 20);
+		panel.add(textField);
+		textField.setColumns(10);
 		panel.add(newMessage);
 		
 		displayAllPosts = new JLabel(DisplayAllPosts);

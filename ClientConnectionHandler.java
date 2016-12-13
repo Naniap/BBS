@@ -1,9 +1,11 @@
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.sql.DriverManager;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
@@ -41,6 +43,7 @@ public class ClientConnectionHandler extends Thread {
     private Scanner scanner;
     private OutputStreamWriter osw;
     private ObjectOutputStream oos;
+    private ObjectInputStream ois;
     private String option = "";
     
     private String uName = "";
@@ -54,7 +57,7 @@ public class ClientConnectionHandler extends Thread {
     
     private int displaySize = 0;
     private boolean validChoice = false;
-
+    public ClientConnectionHandler(){}
 	public ClientConnectionHandler(Socket clientConnection, ArrayList<User> uL, ArrayList<Message> mL, ArrayList<User> lIU) 
 	{
 		connection = clientConnection;
@@ -75,7 +78,7 @@ public class ClientConnectionHandler extends Thread {
             clientOutput = connection.getOutputStream();
             scanner = new Scanner(clientInput);
             osw = new OutputStreamWriter(clientOutput);
-            oos = new ObjectOutputStream(clientOutput);
+            oos = getObjectOutputStream();
         }
         catch(IOException e)
         {
@@ -84,7 +87,29 @@ public class ClientConnectionHandler extends Thread {
         
 		
 	}
-
+	   public ObjectInputStream getObjectInputStream(){
+		    if(ois == null){
+				try {
+					ois = new ObjectInputStream(connection.getInputStream());
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		    }
+		    return ois;
+		}
+		public ObjectOutputStream getObjectOutputStream(){
+		    if(oos == null) {
+		    	try {
+					oos = new ObjectOutputStream(connection.getOutputStream());
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		    }
+		
+		return oos;
+		}
 	@Override
 	public void run() 
 	{
@@ -93,14 +118,12 @@ public class ClientConnectionHandler extends Thread {
             osw.write("Welcome to BBServer Console.\r\n");
             osw.write("This is the development, pre-GUI configuration for testing\r\n");
             
-            osw.flush();
-                               
+            osw.flush();                 
             //loop to continue asking options
             while(!option.equalsIgnoreCase("exit"))
             {
             	displayOptionMenu();
-            	if (!scanner.hasNextLine())
-            		return;
+
                 option = scanner.nextLine();
             	
             	processOption(option);
@@ -751,6 +774,7 @@ public class ClientConnectionHandler extends Thread {
 	
 	public void processOption(String o) throws IOException
 	{
+		
 		o = eliminateSpaces(o);
 		System.out.println("Server received: " + o);
 		if(o.equals("1") || o.equalsIgnoreCase("signin") )
@@ -770,6 +794,7 @@ public class ClientConnectionHandler extends Thread {
     	else if(o.equals("8") || o.equalsIgnoreCase("searchbytopic") || o.equalsIgnoreCase("searchtopic"))
     	{searchByTopicOption();}
     	else if (o.equals("getarray")) {
+    		oos.reset();
     		oos.writeObject(messageList);
     	}
 		

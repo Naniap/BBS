@@ -63,17 +63,7 @@ public class CreatePost implements MouseListener,ActionListener
 		// TODO Auto-generated method stub
 		if ((a.getSource() == backPressed ) 
 				|| (a.getSource() == backButton))
-		{
-			try 
-			{
-				new MainMenu();
-			} 
-			catch (IOException e1) 
-			{
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-		}
+			return;
 		
 	}
 	@Override

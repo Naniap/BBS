@@ -1,3 +1,4 @@
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -8,7 +9,11 @@ import java.util.ArrayList;
 
 
 
-public class UserDAOImpl implements UserDAO {
+public class UserDAOImpl implements UserDAO, Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private final static String password = "Ax20A]sd[fSds";
 	private final static String address = "phantomelite.com";
 	private final static String dbName = "BBS";
