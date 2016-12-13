@@ -126,6 +126,7 @@ public class ClientConnectionHandler extends Thread {
 				displayOptionMenu();
 				if (!scanner.hasNextLine()) {
 					logUserOut();
+					return;
 				}
 				option = scanner.nextLine();
 
@@ -342,6 +343,8 @@ public class ClientConnectionHandler extends Thread {
 			messageList.add(msg);
 			osw.write("\r\nMessage \"" + mTitle + "\" posted.\r\n");
 			osw.flush();
+			oos.writeObject(msg);
+			oos.flush();
 		} else {
 			osw.write("Please Sign in to post messages.\r\n");
 			osw.flush();

@@ -6,11 +6,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.border.Border;
@@ -38,15 +42,20 @@ public class CreatePost implements MouseListener, ActionListener {
 	private JTextArea messageTextField;
 	private JTextArea titleTextField;
 	private JTextArea topicTextField;
-
-	public CreatePost() {
+	private MainApp ma;
+	private JFrame prevJFrame;
+	private String author;
+	public CreatePost(MainApp ma, JFrame prevJFrame, String author) {
+		this.ma = ma;
+		this.prevJFrame = prevJFrame;
+		this.author = author;
 		frame = new JFrame();
 		frame.setLocation(0, 0);
 		frame.setResizable(false);
 		frame.setTitle("Bulletin Board Client");
 		frame.setContentPane(makePanel());
 		frame.pack();
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.setVisible(true);
 	}
 
@@ -55,6 +64,14 @@ public class CreatePost implements MouseListener, ActionListener {
 		JPanel panel = new JPanel();
 		panel.setPreferredSize(new Dimension(1173, 780));
 		panel.setLayout(null);
+		
+		JTextArea authorTextArea = new JTextArea();
+		authorTextArea.setEditable(false);
+		authorTextArea.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		authorTextArea.setColumns(10);
+		authorTextArea.setBounds(376, 250, 812, 29);
+		authorTextArea.setText(author);
+		panel.add(authorTextArea);
 
 		messageTextField = new JTextArea(10, 40);
 		messageTextField.setFont(new Font("Tahoma", Font.PLAIN, 20));
@@ -99,6 +116,12 @@ public class CreatePost implements MouseListener, ActionListener {
 		JLabel CreatePostBackground = new JLabel(newMessage);
 		CreatePostBackground.setBounds(0, 0, 1173, 795);
 		panel.add(CreatePostBackground);
+		frame.addWindowListener(new java.awt.event.WindowAdapter() {
+			@Override
+			public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+					prevJFrame.setVisible(true);
+			}
+		});
 
 		// TODO Auto-generated method stub
 		return panel;
@@ -108,10 +131,24 @@ public class CreatePost implements MouseListener, ActionListener {
 	public void mouseClicked(MouseEvent a) {
 		// TODO Auto-generated method stub
 		if ((a.getSource() == backPressed) || (a.getSource() == backButton)) {
-
+			frame.setVisible(false);
+			prevJFrame.setVisible(true);
 		}
 
 		if ((a.getSource() == addPressed) || (a.getSource() == addButton)) {
+			OutputStreamWriter osw = ma.getOutputStreamWriter();
+			try {
+				osw.write("postmessage\r\n");
+				osw.write(titleTextField.getText() + "\r\n");
+				osw.write(topicTextField.getText() + "\r\n");
+				osw.write(messageTextField.getText() + "\r\n");
+				osw.flush();
+				JOptionPane.showMessageDialog(frame, "Your message has been successfully posted.");
+				frame.setVisible(false);
+				prevJFrame.setVisible(true);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

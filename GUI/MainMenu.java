@@ -2,8 +2,10 @@ package GUI;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
@@ -15,6 +17,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JButton;
 import javax.swing.border.Border;
 import javax.swing.JScrollPane;
@@ -43,9 +46,12 @@ public class MainMenu implements MouseListener, ActionListener {
 
 	JButton logOutButton;
 	private JTable table;
-
-	public MainMenu(ArrayList<Message> messages) throws IOException {
+    private MainApp ma;
+    private String userName;
+	public MainMenu(ArrayList<Message> messages, MainApp ma, String userName) throws IOException {
 		this.messages = messages;
+		this.ma = ma;
+		this.userName = userName;
 		frame = new JFrame();
 		frame.setLocation(0, 0);
 		frame.setResizable(false);
@@ -90,6 +96,16 @@ public class MainMenu implements MouseListener, ActionListener {
 			tableModel.addRow(data);
 		}
 		table.setModel(tableModel);
+		table.addMouseListener(new MouseAdapter() {
+		    public void mousePressed(MouseEvent me) {
+		        JTable table =(JTable) me.getSource();
+		        Point p = me.getPoint();
+		        int row = table.rowAtPoint(p);
+		        if (me.getClickCount() == 2) {
+		            //open new window
+		        }
+		    }
+		});
 
 		panel.add(newMessage);
 
@@ -113,7 +129,7 @@ public class MainMenu implements MouseListener, ActionListener {
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		if (e.getSource() == newMessage) {
-			new CreatePost();
+			new CreatePost(ma, this.frame, userName);
 			frame.setVisible(false);
 		} else if (e.getSource() == displayAllPosts) {
 			try {

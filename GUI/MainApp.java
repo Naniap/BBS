@@ -86,9 +86,17 @@ public class MainApp implements ActionListener {
 					scan.nextLine();
 					messages = (ArrayList<Message>) ois.readObject();
 					System.out.println(messages.size());
-					MainMenu mm = new MainMenu(messages);
+					MainMenu mm = new MainMenu(messages, this, userName);
 					mm.getFrame().setVisible(true);
 					frame.setVisible(false);
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+				}
+			}
+			if (message.contains("posted")) {
+				scan.nextLine();
+				try {
+					messages.add((Message)ois.readObject());
 				} catch (ClassNotFoundException e) {
 					e.printStackTrace();
 				}
@@ -144,6 +152,7 @@ public class MainApp implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == LogInButton) {
 			String uName = usernameField.getText();
+			userName = uName;
 			String pWord = passwordField.getText();
 			String option = "signin";
 			try {
@@ -165,5 +174,8 @@ public class MainApp implements ActionListener {
 
 	public static void exit() {
 		frame.dispose();
+	}
+	public OutputStreamWriter getOutputStreamWriter() {
+		return osw;
 	}
 }
