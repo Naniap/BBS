@@ -123,7 +123,9 @@ public class ClientConnectionHandler extends Thread {
             while(!option.equalsIgnoreCase("exit"))
             {
             	displayOptionMenu();
-
+            	if (!scanner.hasNextLine()) {
+            		logUserOut();
+            	}
                 option = scanner.nextLine();
             	
             	processOption(option);

@@ -8,6 +8,7 @@ import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -17,6 +18,12 @@ import javax.swing.JButton;
 import javax.swing.border.Border;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.JTextPane;
+import javax.swing.JTextArea;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.ListSelectionModel;
+import javax.swing.ScrollPaneConstants;
 
 
 public class MainMenu implements MouseListener,ActionListener
@@ -33,7 +40,7 @@ public class MainMenu implements MouseListener,ActionListener
 	JLabel displayAllPosts;
 	
 	JButton logOutButton;
-	private JTextField textField;
+	private JTable table;
 	
 	public MainMenu(ArrayList<Message> messages) throws IOException
 	{
@@ -58,10 +65,38 @@ public class MainMenu implements MouseListener,ActionListener
 		newMessage.setBounds(60, 75, 264, 237);
 		newMessage.addMouseListener(this);
 		
-		textField = new JTextField();
-		textField.setBounds(294, 114, 86, 20);
-		panel.add(textField);
-		textField.setColumns(10);
+		JScrollPane scrollPane_1 = new JScrollPane();
+		scrollPane_1.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		scrollPane_1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+		scrollPane_1.setBounds(655, 219, 412, 437);
+		panel.add(scrollPane_1);
+		
+		table = new JTable();
+		scrollPane_1.setViewportView(table);
+		table.setRowSelectionAllowed(false);
+		table.setBackground(Color.WHITE);
+		table.setBorder(null);
+		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		DefaultTableModel tableModel = new DefaultTableModel(
+				new Object[][] {
+				},
+				new String[] {
+					"Topic", "Title", "Author", "Message", "Posted"
+				}
+			) {
+				boolean[] columnEditables = new boolean[] {
+					false, false, false, false, false
+				};
+				public boolean isCellEditable(int row, int column) {
+					return columnEditables[column];
+				}
+			};
+		for (Message m : messages) {
+			Object[] data = { m.getTopic(), m.getTitle(), m.getAuthor(), m.getMessage(), m.getPostedTime() };
+			tableModel.addRow(data);
+		}
+		table.setModel(tableModel);
+
 		panel.add(newMessage);
 		
 		displayAllPosts = new JLabel(DisplayAllPosts);
@@ -78,6 +113,7 @@ public class MainMenu implements MouseListener,ActionListener
 		MainMenuBackground.setBounds(0, 0, 1173, 795);
 		panel.add(MainMenuBackground);
 		
+			
 		return panel;
 	}
 
