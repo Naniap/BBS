@@ -1,43 +1,45 @@
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
-import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 import javax.swing.JLabel;
 import javax.swing.JButton;
 import javax.swing.border.Border;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
+import javax.swing.*;
 
 
 public class MainMenu implements MouseListener,ActionListener
 {
-	ArrayList<Message> messages;
 	JFrame frame;
 	
-	ImageIcon homescreen = new ImageIcon("./src/HomeScreen.png");
-	ImageIcon LogOut = new ImageIcon("./src/LogOut.png");
-	ImageIcon NewMessage = new ImageIcon("./src/new-message.png");
-	ImageIcon DisplayAllPosts = new ImageIcon("./src/display-all.png");
+	ImageIcon homescreen = new ImageIcon("HomeScreen.png");
+	ImageIcon LogOut = new ImageIcon("LogOut.png");
+	ImageIcon NewMessage = new ImageIcon("new-message.png");
+	ImageIcon DisplayAllPosts = new ImageIcon("display-all.png");
 	
 	JLabel newMessage;
 	JLabel displayAllPosts;
-	
+
 	JButton logOutButton;
-	private JTextField textField;
+	private JLabel RecentPosts;
+	private JScrollBar scrollBar;
 	
-	public MainMenu(ArrayList<Message> messages) throws IOException
+	String Author = "";
+	String Topic = "";
+	private JTextField typeTopic;
+	private JTextField typeAuthor;
+	
+	public MainMenu() throws IOException
 	{
-		this.messages = messages;
 		frame = new JFrame();
 		frame.setLocation(0, 0);
 		frame.setResizable(false);
@@ -57,12 +59,23 @@ public class MainMenu implements MouseListener,ActionListener
 		newMessage = new JLabel(NewMessage);
 		newMessage.setBounds(60, 75, 264, 237);
 		newMessage.addMouseListener(this);
-		
-		textField = new JTextField();
-		textField.setBounds(294, 114, 86, 20);
-		panel.add(textField);
-		textField.setColumns(10);
 		panel.add(newMessage);
+		
+		/*JLabel lblMessagesAreDisplayed = new JLabel("Messages Are Displayed Below");
+		lblMessagesAreDisplayed.setBounds(768, 179, 224, 14);
+		panel.add(lblMessagesAreDisplayed);
+		*/
+		
+		RecentPosts = new JLabel("sjks");
+		RecentPosts.setVerticalAlignment(SwingConstants.TOP);
+		RecentPosts.setHorizontalAlignment(SwingConstants.LEFT);
+		RecentPosts.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		RecentPosts.setBounds(677, 204, 392, 511);
+		RecentPosts.setOpaque(false);
+		panel.add(RecentPosts);	
+		scrollBar = new JScrollBar();
+		scrollBar.setBounds(1004, 143, 17, 48);
+		RecentPosts.add(scrollBar);
 		
 		displayAllPosts = new JLabel(DisplayAllPosts);
 		displayAllPosts.setBounds(250, 50, 275, 250);
@@ -73,6 +86,18 @@ public class MainMenu implements MouseListener,ActionListener
 		logOutButton.setBounds(47, 685, 186, 49);
 		logOutButton.addActionListener(this);
 		panel.add(logOutButton);
+		
+		typeTopic = new JTextField();
+		typeTopic.setText("Type Topic");
+		typeTopic.setBounds(317, 489, 146, 30);
+		panel.add(typeTopic);
+		typeTopic.setColumns(10);
+		
+		typeAuthor = new JTextField();
+		typeAuthor.setText("Type Author");
+		typeAuthor.setBounds(317, 553, 146, 30);
+		panel.add(typeAuthor);
+		typeAuthor.setColumns(10);
 		
 		JLabel MainMenuBackground = new JLabel(homescreen);
 		MainMenuBackground.setBounds(0, 0, 1173, 795);
@@ -86,21 +111,17 @@ public class MainMenu implements MouseListener,ActionListener
 	{
 		if (e.getSource() == newMessage)
 		{
-			new CreatePost();
 			frame.setVisible(false);
+			new CreatePost();
+			
 		}
 		else if (e.getSource() == displayAllPosts)
 		{
-			try 
-			{
-				new BillBoardClient("127.0.0.1");
-			} 
-			catch (IOException a) 
-			{
-				// TODO Auto-generated catch block
-				a.printStackTrace();
-			}
+			Topic = typeTopic.getText();
+			Author = typeAuthor.getText();
 			frame.setVisible(false);
+			new DisplayAll(Topic, Author);
+			
 		}
 	}
 
@@ -138,11 +159,17 @@ public class MainMenu implements MouseListener,ActionListener
 		// TODO Auto-generated method stub
 		if (a.getSource() == logOutButton)
 		{
-			frame.dispose();
-			BillBoardClient.exit();
+			try 
+			{
+				new BillBoardClient("127.0.0.1");
+			} 
+			catch (IOException e) 
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			frame.setVisible(false);
+			
 		}
-	}
-	public JFrame getFrame() {
-		return frame;
 	}
 }

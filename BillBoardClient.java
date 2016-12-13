@@ -11,14 +11,10 @@ import java.awt.image.ImageObserver;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.Scanner;
-
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -33,40 +29,43 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
-import java.awt.Font;
 
+import java.awt.Font;
 
 public class BillBoardClient implements ActionListener
 {
-	private Socket sock = new Socket("localhost", 666);
-	private InputStream serverInput = sock.getInputStream();
-	private OutputStream serverOutput = sock.getOutputStream();
-	private Scanner scan = new Scanner (serverInput);
-	private OutputStreamWriter osw = new OutputStreamWriter(serverOutput);
-	private ObjectOutputStream oos = new ObjectOutputStream(serverOutput);
-	private ObjectInputStream ois = new ObjectInputStream(serverInput);
-	ArrayList<Message> messages;
-	public boolean loggedIn = false;
+	
+	
+	private InputStream serverInput;
+	private OutputStream serverOutput;
+	private Scanner scan;
+	private OutputStreamWriter osw;
+	
 	static Scanner Scan = new Scanner(System.in);
 
-
-    String userName = "";
+    String username = "";
     String password = "";
     
-    JPanel Panel;
-    ImageIcon Main = new ImageIcon("./src/Main.jpg");
-    ImageIcon LogIn = new ImageIcon("./src/LogIn.png");
-    ImageIcon LogInPressed = new ImageIcon("./src/LogIn_Pressed.png");
-    ImageIcon Add = new ImageIcon("./src/AddAccount.png");
-    ImageIcon AddPressed = new ImageIcon("./src/AddAccount_Pressed.png");
+	String practiceUName = "Admin";
+	String practicePWord = "wsc123";
+    
+	JPanel Panel;
+    
+    ImageIcon Main = new ImageIcon("Main.jpg");
+    ImageIcon LogIn = new ImageIcon("LogIn.png");
+    ImageIcon LogInPressed = new ImageIcon("LogIn_Pressed.png");
+    ImageIcon Add = new ImageIcon("AddAccount.png");
+    ImageIcon AddPressed = new ImageIcon("AddAccount_Pressed.png");
     
     JButton LogInButton;
     JButton AddAccButton;
-    JLabel exitButton;
     
-    static JFrame frame;
+    JLabel InvalidMessage;
+    
+    JFrame frame;
+    
     private JTextField usernameField;
-    private JTextField passwordField;
+    private JPasswordField passwordField;
 	
 	public BillBoardClient(String serverAddress) throws IOException
 	{	 	
@@ -81,8 +80,6 @@ public class BillBoardClient implements ActionListener
 			osw = new OutputStreamWriter(serverOutput);
 	     */       
 			//String message = scan.nextLine();
-			//String message = "cool";
-			//System.out.println(message);
 			frame = new JFrame();
 			frame.setLocation(0, 0);
 			frame.setResizable(false);
@@ -91,40 +88,11 @@ public class BillBoardClient implements ActionListener
 			frame.pack();
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			frame.setVisible(true);
-			frame.addWindowListener(new java.awt.event.WindowAdapter() {
-			    @Override
-			    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-			        if (JOptionPane.showConfirmDialog(frame, 
-			            "Are you sure to close this window?", "Really Closing?", 
-			            JOptionPane.YES_NO_OPTION,
-			            JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION){
-			            System.exit(0);
-			        }
-			    }
-			});
-	    	 while (true) {
-	    		 String message = scan.nextLine();
-	    		 System.out.println(message);
-	    		 if (message.contains("Logged in as")) {
-	    			 loggedIn = true;
-	    			 osw.write("getarray\r\n");
-	    			 osw.flush();
-	    			 try {
-	    				scan.nextLine();
-						messages = (ArrayList<Message>)ois.readObject();
-						System.out.println(messages.size());
-		    			 MainMenu mm = new MainMenu(messages);
-		    			 mm.getFrame().setVisible(true);
-		    			 frame.setVisible(false);
-					} catch (ClassNotFoundException e) {
-						e.printStackTrace();
-					}
-	    		 }
-	    	 }
-	    	 
+			
+			
 			//Scanner keyboard = new Scanner(System.in);
 	        /*    
-			while (cont == true)s
+			while (cont == true)
 			{
 				
 				message = keyboard.next();
@@ -153,10 +121,10 @@ public class BillBoardClient implements ActionListener
 		panel.setPreferredSize(new Dimension(1173,780));
 		panel.setLayout(null);
 		
-		
-		JLabel InvalidMessage = new JLabel("");
-		InvalidMessage.setBounds(511, 484, 183, 14);
+		InvalidMessage = new JLabel("");
+		InvalidMessage.setBounds(508, 484, 183, 14);
 		panel.add(InvalidMessage);
+		InvalidMessage.setVisible(true);
 		
 		LogInButton = new JButton(LogIn);
 		LogInButton.setBounds(477, 521, 217, 47);
@@ -177,13 +145,13 @@ public class BillBoardClient implements ActionListener
 		passwordField = new JPasswordField();
 		passwordField.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		passwordField.setBounds(387, 426, 397, 47);
+		passwordField.setEchoChar('*');
 		panel.add(passwordField);
 		passwordField.setColumns(10);
 		
 		JLabel background = new JLabel(Main);
 		background.setBounds(0, 0, 1173, 780);
 		panel.add(background);
-	
 		
 		return panel;
 	}
@@ -195,36 +163,38 @@ public class BillBoardClient implements ActionListener
     	 new BillBoardClient("127.0.0.1");
     }
 
-
 	@Override
 	public void actionPerformed(ActionEvent e) 
 	{  
 	     if(e.getSource() == LogInButton)
 	     {
-	    	 String uName = usernameField.getText();
-	    	 String pWord = passwordField.getText();
-	    	 String option = "signin";
-	    	 try {
-	    		 osw.write(option + "\r\n");
-	    		 osw.write(option + "\r\n");
-	    		 osw.write(uName + "\r\n");
-	    		 osw.write(pWord + "\r\n");
-	    		 osw.flush();
-	    		 //Object o = ois.readObject();
-	    	 }
-	    	 catch (IOException ex /*| ClassNotFoundException ex*/) {
-	    		 ex.printStackTrace();
+	    	 username = usernameField.getText();
+	    	 password = passwordField.getText();
+	    	 if (username.equals(practiceUName) && password.equals(practicePWord))
+	    	 {
+	    		 try 
+	    		 {
+	    			 frame.setVisible(false);
+	    			 new MainMenu();
+	    			
+	    		 } 
+	    		 catch (IOException e1) 
+	    		 {
+	    			 // TODO Auto-generated catch block
+	    			 e1.printStackTrace();
+	    		 }
 	    	 }
 	     }
 		 
 	     else if(e.getSource() == AddAccButton)
 	     {
-	    	 
+	    	 frame.setVisible(false);
+	    	 new AddAccount();
+	    	
+	     }
+	     if (!(username.equals(practiceUName)) || !(password.equals(practicePWord)))
+	     {
+	    	 InvalidMessage.setText("Invalid Username/Password");
 	     }
 	}
-	public static void exit() {
-		frame.dispose();
-	}
 }
-
-

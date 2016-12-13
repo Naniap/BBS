@@ -138,8 +138,31 @@ public class AddAccount implements ActionListener,MouseListener
 	}
 
 	@Override
-	public void mouseEntered(MouseEvent arg0) {
+	public void mouseEntered(MouseEvent arg0) 
+	{
 		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent d) 
+	{
+		if (d.getSource() == backButton)
+		{
+			backButton.setVisible(false);
+			backPressed.setVisible(true);
+		}
+		
+	}
+	@Override
+	public void mouseReleased(MouseEvent e) 
+	{
+		// TODO Auto-generated method stub
+		if (e.getSource() == backButton)
+		{
+			backButton.setVisible(true);
+			backPressed.setVisible(false);
+		}
 		
 	}
 
@@ -149,15 +172,5 @@ public class AddAccount implements ActionListener,MouseListener
 		
 	}
 
-	@Override
-	public void mousePressed(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
 
-	@Override
-	public void mouseReleased(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
 }
