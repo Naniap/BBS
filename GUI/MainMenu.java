@@ -47,8 +47,8 @@ public class MainMenu implements MouseListener, ActionListener {
 	JLabel displayAllPosts;
 
 	JButton logOutButton;
-	JButton btnSearchByAuthor;
-	JButton btnSearchByTopic;
+	JLabel btnSearchByAuthor;
+	JLabel btnSearchByTopic;
 	private JTable table;
     private MainApp ma;
     private String userName;
@@ -77,15 +77,13 @@ public class MainMenu implements MouseListener, ActionListener {
 		newMessage.setBounds(60, 75, 264, 237);
 		newMessage.addMouseListener(this);
 		
-		btnSearchByAuthor = new JButton();
-		btnSearchByAuthor.setIcon(new ImageIcon("./src/img/Add.png"));
-		btnSearchByAuthor.addActionListener(this);
+		btnSearchByAuthor = new JLabel();
+		btnSearchByAuthor.addMouseListener(this);
 		btnSearchByAuthor.setBounds(149, 545, 156, 39);
 		panel.add(btnSearchByAuthor);
 		
-		btnSearchByTopic = new JButton();
-		btnSearchByTopic.setIcon(new ImageIcon("./src/img/Back.png"));
-		btnSearchByTopic.addActionListener(this);
+		btnSearchByTopic = new JLabel();
+		btnSearchByTopic.addMouseListener(this);
 		btnSearchByTopic.setBounds(149, 493, 126, 39);
 		panel.add(btnSearchByTopic);
 
@@ -151,9 +149,30 @@ public class MainMenu implements MouseListener, ActionListener {
 		} else if (e.getSource() == displayAllPosts) {
 			//do stuff
 		}
-		if (e.getSource() == btnSearchByAuthor) {
-			System.out.println("Search by author...");
-		}
+			if (e.getSource() == btnSearchByAuthor) {
+				String author = JOptionPane.showInputDialog("Enter a user you which to search: ");
+				try {
+					osw.write("searchbyauthor\r\n");
+					osw.write(author + "\r\n");
+					osw.flush();
+					
+				} catch (IOException a) {
+					// TODO Auto-generated catch block
+					a.printStackTrace();
+				}
+				
+			}
+			if (e.getSource() == btnSearchByTopic) {
+				String author = JOptionPane.showInputDialog("Enter a topic you which to search: ");
+				try {
+					osw.write("searchbytopic\r\n");
+					osw.write(author + "\r\n");
+					osw.flush();
+					
+				} catch (IOException a) {
+					a.printStackTrace();
+				}
+			}
 	}
 
 	@Override
@@ -200,30 +219,6 @@ public class MainMenu implements MouseListener, ActionListener {
 			}
 			frame.dispose();
 			MainApp.exit();
-		}
-		if (a.getSource() == btnSearchByAuthor) {
-			String author = JOptionPane.showInputDialog("Enter a user you which to search: ");
-			try {
-				osw.write("searchbyauthor\r\n");
-				osw.write(author + "\r\n");
-				osw.flush();
-				
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-		}
-		if (a.getSource() == btnSearchByTopic) {
-			String author = JOptionPane.showInputDialog("Enter a topic you which to search: ");
-			try {
-				osw.write("searchbytopic\r\n");
-				osw.write(author + "\r\n");
-				osw.flush();
-				
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
 		}
 	}
 	public DefaultTableModel updateModel() {
