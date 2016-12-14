@@ -56,6 +56,8 @@ public class MainApp implements ActionListener {
 	static JFrame frame;
 	private JTextField usernameField;
 	private JTextField passwordField;
+	
+	MainMenu mm;
 
 	public MainApp(String serverAddress) throws IOException {
 		boolean cont = true;
@@ -78,34 +80,47 @@ public class MainApp implements ActionListener {
 		});
 		while (true) {
 			String message = scan.nextLine();
-			System.out.println(message);
+			//System.out.println(message);
 			if (message.contains("Logged in as")) {
 				loggedIn = true;
 				osw.write("getarray\r\n");
 				osw.flush();
 				try {
-					System.out.println("Consumed: " + scan.nextLine());
+					scan.nextLine();
 					messages = (ArrayList<Message>) ois.readObject();
-					System.out.println(messages.size());
-					MainMenu mm = new MainMenu(messages, this, userName);
+					mm = new MainMenu(messages, this, userName);
 					mm.getFrame().setVisible(true);
 					frame.setVisible(false);
 				} catch (ClassNotFoundException e) {
 					e.printStackTrace();
 				}
 			}
-			if (message.contains("posted")) {
-				scan.nextLine();
+			if (message.contains("Database Query Select All Messages.")) {
 				try {
-					messages.add((Message)ois.readObject());
+					messages = (ArrayList<Message>)ois.readObject();
+					mm.setMessages();
+				} catch (ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				mm.setMessages();
+			}
+			if (message.contains("posted")) {
+				osw.write("refreshdata\r\n");
+				osw.flush();
+			}
+			if (message.contains("Messages with author")) {
+				try {
+					messages = (ArrayList<Message>)ois.readObject();
+					mm.setMessages();
 				} catch (ClassNotFoundException e) {
 					e.printStackTrace();
 				}
 			}
-			if (message.contains("Messages with author")) {
-				System.out.println(scan.nextLine());
+			if (message.contains("Messages with topic")) {
 				try {
 					messages = (ArrayList<Message>)ois.readObject();
+					mm.setMessages();
 				} catch (ClassNotFoundException e) {
 					e.printStackTrace();
 				}

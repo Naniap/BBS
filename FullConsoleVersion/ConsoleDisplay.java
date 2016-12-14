@@ -1,3 +1,5 @@
+package FullConsoleVersion;
+
 import java.io.InputStream;
 import java.util.Scanner;
 

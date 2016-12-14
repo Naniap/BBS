@@ -1,3 +1,5 @@
+package FullConsoleVersion;
+
 import java.sql.Timestamp;
 
 public class Message {

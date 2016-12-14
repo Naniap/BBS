@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
 
+import com.mysql.jdbc.Messages;
+
 import DAO.Message;
 import DAO.MessageDAOImpl;
 import DAO.User;
@@ -125,7 +127,6 @@ public class ClientConnectionHandler extends Thread {
 			while (!option.equalsIgnoreCase("exit")) {
 				displayOptionMenu();
 				if (!scanner.hasNextLine()) {
-					logUserOut();
 					return;
 				}
 				option = scanner.nextLine();
@@ -257,9 +258,6 @@ public class ClientConnectionHandler extends Thread {
 				loggedInUserList.add(currentUser);
 				osw.write("\r\nLogged in as " + currentUser.name + ".\r\n");
 				osw.flush();
-				// oos.writeObject(currentUser);
-				// oos.flush();
-
 			} else {
 				osw.write("\r\nSorry, user name or password was incorrect. \r\n");
 				osw.flush();
@@ -295,7 +293,7 @@ public class ClientConnectionHandler extends Thread {
 			osw.write("\r\nUser " + tempUser.name + " added.\r\n");
 			osw.flush();
 
-			//setNewUser(tempUser);
+			// setNewUser(tempUser);
 		}
 	}
 
@@ -500,32 +498,31 @@ public class ClientConnectionHandler extends Thread {
 			} else {
 				osw.write("Messages with author " + searchAuthor + "\r\n");
 				osw.flush();
+				System.out.println(matches);
+				System.out.println(matches.get(0).getAuthor());
 				oos.writeObject(matches);
 				oos.flush();
-			//	for (int x = 0; x < matches.size(); x++) {
-					// this will probably show more details. TODO
-				//	osw.write((x + 1) + " " + matches.get(x).title + "\r\n");
-				//}
-				//osw.write("\r\n Please choose a message, 1 - " + matches.size() + "\r\n");
-				//osw.flush();
+				// for (int x = 0; x < matches.size(); x++) {
+				// this will probably show more details. TODO
+				// osw.write((x + 1) + " " + matches.get(x).title + "\r\n");
+				// }
+				// osw.write("\r\n Please choose a message, 1 - " +
+				// matches.size() + "\r\n");
+				// osw.flush();
 
-				/*option = scanner.nextLine();
-
-				validChoice = false;
-				for (int x = 0; x < matches.size(); x++)
-					if (Integer.parseInt(option) == x + 1) {
-						osw.write("\r\n" + matches.get(x).displayString() + "\r\n");
-						osw.flush();
-						validChoice = true;
-					}
-				if (!validChoice) {
-					invalidOption();
-				}*/
+				/*
+				 * option = scanner.nextLine();
+				 * 
+				 * validChoice = false; for (int x = 0; x < matches.size(); x++)
+				 * if (Integer.parseInt(option) == x + 1) { osw.write("\r\n" +
+				 * matches.get(x).displayString() + "\r\n"); osw.flush();
+				 * validChoice = true; } if (!validChoice) { invalidOption(); }
+				 */
 			}
 
-		//} else {
-			//osw.write("Please Sign in to search messages.\r\n");
-			//osw.flush();
+			// } else {
+			// osw.write("Please Sign in to search messages.\r\n");
+			// osw.flush();
 		}
 	}
 
@@ -546,32 +543,32 @@ public class ClientConnectionHandler extends Thread {
 				osw.write("No messages to display.\r\n");
 				osw.flush();
 			} else {
-				osw.write("\r\n Messages with topic" + searchTopic + "\r\n");
+				osw.write("Messages with topic " + searchTopic + "\r\n");
 				osw.flush();
-				for (int x = 0; x < matches.size(); x++) {
-					// this will probably show more details. TODO
-					osw.write((x + 1) + " " + matches.get(x).title + "\r\n");
-				}
-				osw.write("\r\n Please choose a message, 1 - " + matches.size() + "\r\n");
-				osw.flush();
-
-				option = scanner.nextLine();
-
-				validChoice = false;
-				for (int x = 0; x < matches.size(); x++)
-					if (Integer.parseInt(option) == x + 1) {
-						osw.write("\r\n" + matches.get(x).displayString() + "\r\n");
-						osw.flush();
-						validChoice = true;
-					}
-				if (!validChoice) {
-					invalidOption();
-				}
+				System.out.println(matches);
+				System.out.println(matches.get(0).getAuthor());
+				oos.writeObject(matches);
+				oos.flush();
+				/*
+				 * for (int x = 0; x < matches.size(); x++) { // this will
+				 * probably show more details. TODO osw.write((x + 1) + " " +
+				 * matches.get(x).title + "\r\n"); }
+				 * 
+				 * osw.write("\r\n Please choose a message, 1 - " +
+				 * matches.size() + "\r\n"); osw.flush();
+				 * 
+				 * option = scanner.nextLine();
+				 * 
+				 * validChoice = false; for (int x = 0; x < matches.size(); x++)
+				 * if (Integer.parseInt(option) == x + 1) { osw.write("\r\n" +
+				 * matches.get(x).displayString() + "\r\n"); osw.flush();
+				 * validChoice = true; } if (!validChoice) { invalidOption(); }
+				 * }
+				 * 
+				 * } else { osw.write("Please Sign in to search messages.\r\n");
+				 * osw.flush();
+				 */
 			}
-
-		} else {
-			osw.write("Please Sign in to search messages.\r\n");
-			osw.flush();
 		}
 	}
 
@@ -638,7 +635,7 @@ public class ClientConnectionHandler extends Thread {
 		isLoggedIn = false;
 		loggedInUserList.remove(loggedInUserList.indexOf(currentUser));
 
-		currentUser = null;
+		//currentUser = null;
 	}
 
 	public void displayOptionMenu() throws IOException {
@@ -683,6 +680,14 @@ public class ClientConnectionHandler extends Thread {
 			searchByTopicOption();
 		} else if (o.equals("getarray")) {
 			oos.reset();
+			oos.writeObject(messageList);
+		}
+		else if (o.equals("refreshdata")) {
+			oos.reset();
+			MessageDAOImpl mDAO = new MessageDAOImpl();
+			messageList = mDAO.selectAll();
+			osw.write("Database Query Select All Messages.\r\n");
+			osw.flush();
 			oos.writeObject(messageList);
 		}
 
